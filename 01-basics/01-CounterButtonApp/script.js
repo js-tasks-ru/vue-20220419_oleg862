@@ -1,3 +1,15 @@
-// import { createApp } from './vendor/vue.esm-browser.js';
+import { createApp, defineComponent } from './vendor/vue.esm-browser.js';
 
-// Создайте Vue приложение
+const CounterButtonApp = defineComponent({
+  name: 'CounterButtonApp',
+
+  data() {
+    return {
+      counter: 0,
+    };
+  },
+});
+
+const app = createApp(CounterButtonApp);
+
+app.mount('#app');
