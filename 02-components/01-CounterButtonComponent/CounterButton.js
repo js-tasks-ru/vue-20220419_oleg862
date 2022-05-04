@@ -11,6 +11,8 @@ export default defineComponent({
     },
   },
 
+  emits: ['update:count'],
+
   methods: {
     click() {
       this.$emit('update:count', this.count + 1);
