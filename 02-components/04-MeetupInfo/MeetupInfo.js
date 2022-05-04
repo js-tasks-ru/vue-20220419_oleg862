@@ -18,7 +18,7 @@ export default defineComponent({
     },
   },
 
-  methods: {
+  computed: {
     dateAttr() {
       return new Date(this.date).toJSON().split('T')[0];
     },
@@ -44,7 +44,7 @@ export default defineComponent({
       </li>
       <li>
         <img class="icon meetup-info__icon" alt="icon" src="/assets/icons/icon-cal-lg.svg" />
-        <time :datetime="dateAttr()">{{ dateText() }}</time>
+        <time :datetime="dateAttr">{{ dateText }}</time>
       </li>
     </ul>`,
 });
