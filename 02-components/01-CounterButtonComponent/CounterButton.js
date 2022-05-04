@@ -6,7 +6,7 @@ export default defineComponent({
   props: {
     count: {
       type: Number,
-      requred: true,
+      required: true,
       default: 0,
     },
   },

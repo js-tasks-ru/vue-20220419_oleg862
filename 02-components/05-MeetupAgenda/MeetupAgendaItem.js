@@ -7,7 +7,7 @@ export default defineComponent({
   props: {
     agendaItem: {
       type: Object,
-      require: true,
+      required: true,
     },
   },
 

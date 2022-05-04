@@ -6,15 +6,15 @@ export default defineComponent({
   props: {
     organizer: {
       type: String,
-      require: true,
+      required: true,
     },
     place: {
       type: String,
-      require: true,
+      required: true,
     },
     date: {
       type: Number,
-      require: true,
+      required: true,
     },
   },
 
