@@ -1,24 +1,58 @@
 <template>
   <div class="toasts">
-    <div class="toast toast_success">
-      <ui-icon class="toast__icon" icon="check-circle" />
-      <span>Success Toast Example</span>
-    </div>
-
-    <div class="toast toast_error">
-      <ui-icon class="toast__icon" icon="alert-circle" />
-      <span>Error Toast Example</span>
-    </div>
+    <ui-toaster-item
+      v-for="item in list"
+      :key="item.id"
+      :type="item.type"
+      :message="item.message"
+      :timeout="item.timeout"
+      @remove="removeItem(item.id)"
+    />
   </div>
 </template>
 
 <script>
-import UiIcon from './UiIcon';
+import UiToasterItem from './UiToasterItem.vue';
 
 export default {
   name: 'TheToaster',
 
-  components: { UiIcon },
+  components: { UiToasterItem },
+
+  data() {
+    return {
+      list: [],
+      nextId: 1,
+    };
+  },
+
+  methods: {
+    success(message) {
+      this.addItem({
+        type: 'success',
+        message,
+      });
+    },
+
+    error(message) {
+      this.addItem({
+        type: 'error',
+        message,
+      });
+    },
+
+    addItem(config) {
+      this.list.push({
+        id: this.nextId++,
+        ...config,
+      });
+    },
+
+    removeItem(id) {
+      const index = this.list.findIndex((item) => item.id === id);
+      if (index !== -1) this.list.splice(index, 1);
+    },
+  },
 };
 </script>
 
@@ -39,35 +73,5 @@ export default {
     bottom: 72px;
     right: 112px;
   }
-}
-
-.toast {
-  display: flex;
-  flex: 0 0 auto;
-  flex-direction: row;
-  align-items: center;
-  padding: 16px;
-  background: #ffffff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  border-radius: 4px;
-  font-size: 18px;
-  line-height: 28px;
-  width: auto;
-}
-
-.toast + .toast {
-  margin-top: 20px;
-}
-
-.toast__icon {
-  margin-right: 12px;
-}
-
-.toast.toast_success {
-  color: var(--green);
-}
-
-.toast.toast_error {
-  color: var(--red);
 }
 </style>

@@ -1,18 +1,27 @@
 <template>
-  <div class="dropdown dropdown_opened">
-    <button type="button" class="dropdown__toggle dropdown__toggle_icon">
-      <ui-icon icon="tv" class="dropdown__icon" />
-      <span>Title</span>
+  <div class="dropdown" :class="{ dropdown_opened: expanded }">
+    <button
+      type="button"
+      class="dropdown__toggle"
+      :class="{ dropdown__toggle_icon: hasIcon }"
+      @click="expanded = !expanded"
+    >
+      <ui-icon v-if="selection && selection.icon" :icon="selection.icon" class="dropdown__icon" />
+      <span>{{ selection ? selection.text : title }}</span>
     </button>
 
-    <div class="dropdown__menu" role="listbox">
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <ui-icon icon="tv" class="dropdown__icon" />
-        Option 1
-      </button>
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <ui-icon icon="tv" class="dropdown__icon" />
-        Option 2
+    <div v-show="expanded" class="dropdown__menu" role="listbox">
+      <button
+        v-for="option in options"
+        :key="option.value"
+        class="dropdown__item"
+        :class="{ dropdown__item_icon: hasIcon }"
+        role="option"
+        type="button"
+        @click="onmenuclick(option.value)"
+      >
+        <ui-icon v-if="option && option.icon" :icon="option.icon" class="dropdown__icon" />
+        {{ option.text }}
       </button>
     </div>
   </div>
@@ -25,6 +34,37 @@ export default {
   name: 'UiDropdown',
 
   components: { UiIcon },
+
+  props: {
+    modelValue: String,
+    title: String,
+    options: Array,
+  },
+
+  emits: ['update:modelValue'],
+
+  data() {
+    return {
+      expanded: false,
+    };
+  },
+
+  computed: {
+    hasIcon() {
+      return this.options.some((item) => Boolean(item.icon));
+    },
+
+    selection() {
+      return this.options.find((item) => item.value === this.modelValue);
+    },
+  },
+
+  methods: {
+    onmenuclick(value) {
+      this.$emit('update:modelValue', value);
+      this.expanded = false;
+    },
+  },
 };
 </script>
 
