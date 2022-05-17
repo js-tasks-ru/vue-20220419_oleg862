@@ -9,15 +9,13 @@
 import UiIcon from './UiIcon.vue';
 
 export default {
-  name: 'TheToasterItem',
+  name: 'UiToasterItem',
 
   components: { UiIcon },
 
   props: {
-    cls: String,
+    type: String,
     message: String,
-    icon: String,
-    id: Number,
     timeout: {
       type: Number,
       default: 5000,
@@ -32,6 +30,20 @@ export default {
     };
   },
 
+  computed: {
+    cls() {
+      return `toast_${this.type}`;
+    },
+
+    icon() {
+      const icons = {
+        success: 'check-circle',
+        error: 'alert-circle',
+      };
+      return icons[this.type] || '';
+    },
+  },
+
   mounted() {
     this.timeoutId = setTimeout(() => this.onremove(), this.timeout);
   },
@@ -39,7 +51,7 @@ export default {
   methods: {
     onremove() {
       this.timeoutId = clearTimeout(this.timeoutId);
-      this.$emit('remove', this.id);
+      this.$emit('remove');
     },
   },
 };

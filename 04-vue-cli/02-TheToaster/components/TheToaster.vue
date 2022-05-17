@@ -1,25 +1,23 @@
 <template>
   <div class="toasts">
-    <the-toaster-item
+    <ui-toaster-item
       v-for="item in list"
-      :id="item.id"
       :key="item.id"
-      :cls="item.cls"
+      :type="item.type"
       :message="item.message"
-      :icon="item.icon"
       :timeout="item.timeout"
-      @remove="removeItem"
+      @remove="removeItem(item.id)"
     />
   </div>
 </template>
 
 <script>
-import TheToasterItem from './TheToasterItem.vue';
+import UiToasterItem from './UiToasterItem.vue';
 
 export default {
   name: 'TheToaster',
 
-  components: { TheToasterItem },
+  components: { UiToasterItem },
 
   data() {
     return {
@@ -31,16 +29,14 @@ export default {
   methods: {
     success(message) {
       this.addItem({
-        cls: 'toast_success',
-        icon: 'check-circle',
+        type: 'success',
         message,
       });
     },
 
     error(message) {
       this.addItem({
-        cls: 'toast_error',
-        icon: 'alert-circle',
+        type: 'error',
         message,
       });
     },
