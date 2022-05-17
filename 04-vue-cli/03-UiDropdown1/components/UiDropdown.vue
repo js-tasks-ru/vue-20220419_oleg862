@@ -14,12 +14,11 @@
       <button
         v-for="option in options"
         :key="option.value"
-        :value="option.value"
         class="dropdown__item"
         :class="{ dropdown__item_icon: hasIcon }"
         role="option"
         type="button"
-        @click="onmenuclick"
+        @click="onmenuclick(option.value)"
       >
         <ui-icon v-if="option && option.icon" :icon="option.icon" class="dropdown__icon" />
         {{ option.text }}
@@ -61,8 +60,8 @@ export default {
   },
 
   methods: {
-    onmenuclick($event) {
-      this.$emit('update:modelValue', $event.target.value);
+    onmenuclick(value) {
+      this.$emit('update:modelValue', value);
       this.expanded = false;
     },
   },
