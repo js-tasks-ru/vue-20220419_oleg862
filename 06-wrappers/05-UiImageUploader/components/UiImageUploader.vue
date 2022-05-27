@@ -1,8 +1,20 @@
 <template>
   <div class="image-uploader">
-    <label class="image-uploader__preview image-uploader__preview-loading" style="--bg-url: url('/link.jpeg')">
-      <span class="image-uploader__text">Загрузить изображение</span>
-      <input type="file" accept="image/*" class="image-uploader__input" />
+    <label
+      class="image-uploader__preview"
+      :class="{ 'image-uploader__preview-loading': uploading }"
+      :style="`--bg-url: url(${image})`"
+    >
+      <span class="image-uploader__text">{{ uploaderText }}</span>
+      <input
+        ref="input"
+        type="file"
+        accept="image/*"
+        class="image-uploader__input"
+        v-bind="$attrs"
+        @click="onFileClick"
+        @change="onFileChange"
+      />
     </label>
   </div>
 </template>
@@ -10,6 +22,75 @@
 <script>
 export default {
   name: 'UiImageUploader',
+  inheritAttrs: false,
+  props: {
+    preview: String,
+    uploader: Function,
+  },
+
+  emits: ['select', 'remove', 'upload', 'error'],
+
+  data() {
+    return {
+      image: undefined,
+      uploading: false,
+    };
+  },
+
+  computed: {
+    state() {
+      return !this.image ? 'empty' : this.uploading ? 'uploading' : 'success';
+    },
+    uploaderText() {
+      const stateTexts = {
+        empty: 'Загрузить изображение',
+        uploading: 'Загрузка...',
+        success: 'Удалить изображение',
+      };
+      return stateTexts[this.state];
+    },
+  },
+
+  created() {
+    this.image = this.preview;
+  },
+
+  methods: {
+    async onFileChange(e) {
+      const file = e.target.files[0];
+      this.image = URL.createObjectURL(file);
+      this.$emit('select', file);
+      if (this.uploader) {
+        this.uploading = true;
+        try {
+          const result = await this.uploader(file);
+          this.$emit('upload', result);
+        } catch (e) {
+          this.$emit('error', e);
+          this.clean();
+        } finally {
+          this.uploading = false;
+        }
+      }
+    },
+
+    onFileClick(e) {
+      if (this.uploading || this.image) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+
+      if (!this.uploading && this.image) {
+        this.$emit('remove', this.image);
+        this.clean();
+      }
+    },
+
+    clean() {
+      this.image = undefined;
+      this.$refs.input.value = null;
+    },
+  },
 };
 </script>
 
