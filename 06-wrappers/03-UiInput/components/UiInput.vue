@@ -11,30 +11,20 @@
       <slot name="left-icon" />
     </div>
 
-    <input
-      v-if="!multiline"
+    <component
+      :is="tag"
       ref="input"
       v-bind="$attrs"
-      v-model="customValue"
+      :value="modelValue"
       class="form-control"
       :class="{
         'form-control_rounded': rounded,
         'form-control_sm': small,
       }"
-    />
-
-    <textarea
-      v-if="multiline"
-      ref="input"
-      v-bind="$attrs"
-      v-model="customValue"
-      class="form-control"
-      :class="{
-        'form-control_rounded': rounded,
-        'form-control_sm': small,
-      }"
+      @input="onInputValue"
+      @change="onChangeValue"
     >
-    </textarea>
+    </component>
 
     <div v-if="$slots['right-icon']" class="input-group__icon">
       <slot name="right-icon" />
@@ -53,23 +43,30 @@ export default {
     small: Boolean,
     rounded: Boolean,
     multiline: Boolean,
+    modelModifiers: {
+      default: () => ({}),
+    },
   },
 
   emits: ['update:modelValue'],
 
   computed: {
-    customValue: {
-      get() {
-        return this.modelValue;
-      },
-
-      set(value) {
-        this.$emit('update:modelValue', value);
-      },
+    tag() {
+      return this.multiline ? 'textarea' : 'input';
     },
   },
 
   methods: {
+    onInputValue(e) {
+      if (!this.modelModifiers.lazy) {
+        this.$emit('update:modelValue', e.target.value);
+      }
+    },
+    onChangeValue(e) {
+      if (this.modelModifiers.lazy) {
+        this.$emit('update:modelValue', e.target.value);
+      }
+    },
     focus() {
       this.$refs.input.focus();
     },
